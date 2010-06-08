@@ -1,1 +1,1 @@
-require 'has_schizophrenia'
+require 'schizophrenia'
