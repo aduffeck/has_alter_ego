@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class Car < ActiveRecord::Base
+  has_many :tires
   has_schizophrenia
 end
 
@@ -8,6 +9,14 @@ class Bike < ActiveRecord::Base
 end
 
 class Scooter < ActiveRecord::Base
+end
+
+class Tire < ActiveRecord::Base
+end
+
+class Drink < ActiveRecord::Base
+  set_primary_key :name
+  has_schizophrenia
 end
 
 class SchizophreniaTest < Test::Unit::TestCase
@@ -26,7 +35,7 @@ class SchizophreniaTest < Test::Unit::TestCase
   end
 
   def test_create_objects_from_yml
-    assert_equal 3, Car.count
+    assert_equal 4, Car.count
     c1 = Car.find(1)
     assert_equal "Lotus", c1.brand
     assert_equal "Elise", c1.model
@@ -74,15 +83,57 @@ class SchizophreniaTest < Test::Unit::TestCase
   def test_reset
     c = Car.find(3)
     assert_equal "Ferrari", c.brand
+    assert_equal "default", c.schizophrenia_state
 
     c.brand = "Fiat"
     c.save
     c.reload
 
     assert_equal "Fiat", c.brand
+    assert_equal "modified", c.schizophrenia_state
     c.reset
     c.reload
 
     assert_equal "Ferrari", c.brand
+    assert_equal "default", c.schizophrenia_state
+  end
+
+  def test_associations_do_not_change_state
+    c = Car.find(4)
+    assert_equal "default", c.schizophrenia_state
+    assert_equal 0, c.tires.size
+
+    4.times do
+      c.tires << Tire.new
+    end
+    c.reload
+    assert_equal "default", c.schizophrenia_state
+    assert_equal 4, c.tires.size
+  end
+
+  def test_different_primary_key
+    assert_equal 2, Drink.all.size
+    assert_equal "none", Drink.find("water").color
+
+    water = Drink.find("water")
+    assert water.schizophrenic?
+    assert_equal "default", water.schizophrenia_state
+
+    water.color = "blue"
+    water.save
+    water.reload
+    assert_equal "blue", water.color
+    assert_equal "modified", water.schizophrenia_state
+
+    water.reset
+    water.reload
+    assert_equal "none", water.color
+    assert_equal "default", water.schizophrenia_state
+
+    orangejuice = Drink.new
+    orangejuice.name = "orangejuice"
+    orangejuice.color = "yellow"
+    orangejuice.save
+    assert !orangejuice.schizophrenic?
   end
 end

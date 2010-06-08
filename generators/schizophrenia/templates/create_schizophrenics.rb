@@ -1,7 +1,7 @@
 class CreateSchizophrenics < ActiveRecord::Migration
   def self.up
     create_table :schizophrenics do |t|
-      t.integer :schizophrenic_object_id
+      t.string :schizophrenic_object_id
       t.string :schizophrenic_object_type, :limit => 40
       t.string :state
     end
