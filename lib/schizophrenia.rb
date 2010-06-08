@@ -38,7 +38,7 @@ module Schizophrenia
         yml.keys.each do |o|
           db_object = self.find(o) rescue nil
           if db_object
-
+            raise "There is already a #{db_object.class} with id #{db_object.id} in the database." unless db_object.schizophrenic?
           else
             db_object = self.new
             db_object[self.primary_key] = o

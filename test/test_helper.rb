@@ -22,5 +22,6 @@ silence_stream(STDOUT) do
     end
 
     create_table :bikes
+    create_table :scooters
   end
 end

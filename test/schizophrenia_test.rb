@@ -7,14 +7,17 @@ end
 class Bike < ActiveRecord::Base
 end
 
+class Scooter < ActiveRecord::Base
+end
+
 class SchizophreniaTest < Test::Unit::TestCase
   def test_space_gets_reserved
     c = Car.create
     assert_equal 1001, c.id
 
-    assert_equal 1, Bike.create.id
-    Bike.has_schizophrenia :reserved_space => 500
-    assert_equal 501, Bike.create.id
+    assert_equal 1, Scooter.create.id
+    Scooter.has_schizophrenia :reserved_space => 500
+    assert_equal 501, Scooter.create.id
   end
 
   def test_schizophrenic?
@@ -28,5 +31,12 @@ class SchizophreniaTest < Test::Unit::TestCase
     assert_equal "Lotus", c1.brand
     assert_equal "Elise", c1.model
     assert c1.schizophrenic?
+  end
+
+  def test_exception_is_raised_if_id_is_already_in_use
+    bike = Bike.create
+    assert_raise RuntimeError do
+      Bike.has_schizophrenia
+    end
   end
 end
