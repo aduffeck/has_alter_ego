@@ -12,6 +12,7 @@ module Schizophrenia
 
         class_eval do
           has_one :schizophrenic, :as => :schizophrenic_object
+          alias_method :save_without_schizophrenia, :save
           send :include, InstanceMethods
           reserve_space(opts[:reserved_space])
           parse_yml_representation
@@ -39,6 +40,12 @@ module Schizophrenia
           db_object = self.find(o) rescue nil
           if db_object
             raise "There is already a #{db_object.class} with id #{db_object.id} in the database." unless db_object.schizophrenic?
+            if db_object.schizophrenic.state == 'default'
+              yml[o].keys.each do |attr|
+                db_object[attr] = yml[o][attr]
+              end
+              db_object.save
+            end
           else
             db_object = self.new
             db_object[self.primary_key] = o
@@ -47,7 +54,7 @@ module Schizophrenia
             end
             db_object.build_schizophrenic
             db_object.schizophrenic.state = 'default'
-            db_object.save
+            db_object.save_without_schizophrenia
           end
         end
         yml
@@ -57,6 +64,11 @@ module Schizophrenia
     module InstanceMethods
       def schizophrenic?
         return self.schizophrenic.present?
+      end
+
+      def save perform_validation = true
+        self.schizophrenic.state = 'modified' if self.schizophrenic
+        save_without_schizophrenia perform_validation
       end
     end
   end

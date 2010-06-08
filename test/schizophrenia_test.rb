@@ -39,4 +39,18 @@ class SchizophreniaTest < Test::Unit::TestCase
       Bike.has_schizophrenia
     end
   end
+
+  def test_object_attributes_are_updated_if_not_modified
+    c = Car.find(1)
+    assert_equal c.brand, "Lotus"
+
+    c.update_attribute(:brand, "Toyota")
+    c.save_without_schizophrenia
+    c.reload
+    assert_equal c.brand, "Toyota"
+
+    Car.parse_yml_representation
+    c.reload
+    assert_equal c.brand, "Lotus"
+  end
 end
