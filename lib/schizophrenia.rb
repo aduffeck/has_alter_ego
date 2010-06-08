@@ -7,33 +7,33 @@ module Schizophrenia
     end
 
     module ClassMethods
-      def has_schizophrenia options = {}
-        options.reverse_merge!(:reserved_space => 1000)
+      def has_schizophrenia opts = {}
+        opts.reverse_merge!({:reserved_space => 1000})
 
         class_eval do
           has_one :schizophrenic, :as => :schizophrenic_object
           send :include, InstanceMethods
-          reserve_space(options[:reserved_space])
+          reserve_space(opts[:reserved_space])
           parse_yml_representation
         end
       end
 
       # Reserve the first n IDs for stubbed objects
       def reserve_space space
-        max_id = Car.connection.execute("SELECT id FROM #{Car.name.pluralize.downcase} ORDER BY id DESC LIMIT 1").first["id"].to_i
+        max_id = self.last.id
         return if max_id >= space
-        case self.connection.adapter_name
-        when "SQLite"
-          self.connection.execute("UPDATE SQLITE_SEQUENCE SET seq = #{space} WHERE name = '#{self.name.pluralize.downcase}'")
-        when "PostgreSQL"
-          self.connection.execute("SELECT setval('#{self.name.pluralize.downcase}', #{space});")
-        when "MySQL"
-          self.connection.execute("ALTER TABLE #{self.name.pluralize.downcase} AUTO_INCREMENT=#{space}")
-        end
+
+        o = self.new
+        o.id = space
+        o.save_without_validation
+        o.destroy
+        return
       end
 
       def parse_yml_representation
-        yml = File.open( File.join(RAILS_ROOT, "db", "fixtures", "schizophrenia", self.name.pluralize.downcase + ".yml") ) do |yf|
+        filename = File.join(RAILS_ROOT, "db", "fixtures", "schizophrenia", self.name.pluralize.downcase + ".yml")
+        return unless File.exists?(filename)
+        yml = File.open(filename) do |yf|
           YAML::load( yf )
         end
         yml
