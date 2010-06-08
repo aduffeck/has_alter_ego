@@ -1,3 +1,5 @@
+require File.join(File.dirname(__FILE__), "schizophrenia", "schizophrenic")
+
 module Schizophrenia
   module ActiveRecordAdapater
     def self.included(base)
@@ -6,9 +8,10 @@ module Schizophrenia
 
     module ClassMethods
       def has_schizophrenia options = {}
-        class_eval do
-          options.reverse_merge!(:reserved_space => 1000)
+        options.reverse_merge!(:reserved_space => 1000)
 
+        class_eval do
+          has_one :schizophrenic, :as => :schizophrenic_object
           send :include, InstanceMethods
           reserve_space(options[:reserved_space])
           parse_yml_representation
@@ -38,6 +41,9 @@ module Schizophrenia
     end
 
     module InstanceMethods
+      def schizophrenic?
+        return self.schizophrenic.present?
+      end
     end
   end
 end
