@@ -20,8 +20,7 @@ module Schizophrenia
 
       # Reserve the first n IDs for stubbed objects
       def reserve_space space
-        max_id = self.last.id
-        return if max_id >= space
+        return if self.last and self.last.id >= space
 
         o = self.new
         o.id = space
@@ -35,6 +34,21 @@ module Schizophrenia
         return unless File.exists?(filename)
         yml = File.open(filename) do |yf|
           YAML::load( yf )
+        end
+        yml.keys.each do |o|
+          db_object = self.find(o) rescue nil
+          if db_object
+
+          else
+            db_object = self.new
+            db_object[self.primary_key] = o
+            yml[o].keys.each do |attr|
+              db_object[attr] = yml[o][attr]
+            end
+            db_object.build_schizophrenic
+            db_object.schizophrenic.state = 'default'
+            db_object.save
+          end
         end
         yml
       end

@@ -10,13 +10,16 @@ RAILS_ROOT = File.dirname(__FILE__)
 
 silence_stream(STDOUT) do
   ActiveRecord::Schema.define do
-    create_table :uuids do |t|
+    create_table :schizophrenics do |t|
       t.integer :schizophrenic_object_id
       t.string :schizophrenic_object_type, :limit => 40
       t.string :state
     end
 
-    create_table :cars
+    create_table :cars do |t|
+      t.string :brand
+      t.string :model
+    end
 
     create_table :bikes
   end
