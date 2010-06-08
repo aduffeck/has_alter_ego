@@ -1,11 +1,11 @@
-# HasSchizophrenia
+# schizophrenia
 
-Introduction goes here.
+schizophrenia makes it possible to define seed data and transparently override it in the datase. 
+
+# Installation
 
 
 # Example
-
-Example goes here.
 
 
 Copyright (c) 2010 Andre Duffeck, released under the MIT license
