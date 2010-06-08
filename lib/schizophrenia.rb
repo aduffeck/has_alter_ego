@@ -15,7 +15,7 @@ module Schizophrenia
           alias_method :save_without_schizophrenia, :save
           send :include, InstanceMethods
           reserve_space(opts[:reserved_space])
-          parse_yml_representation
+          parse_yml
         end
       end
 
@@ -30,32 +30,44 @@ module Schizophrenia
         return
       end
 
-      def parse_yml_representation
-        filename = File.join(RAILS_ROOT, "db", "fixtures", "schizophrenia", self.name.pluralize.downcase + ".yml")
-        return unless File.exists?(filename)
-        yml = File.open(filename) do |yf|
-          YAML::load( yf )
-        end
+      def parse_yml
+        yml = get_yml
         yml.keys.each do |o|
-          db_object = self.find(o) rescue nil
-          if db_object
-            raise "There is already a #{db_object.class} with id #{db_object.id} in the database." unless db_object.schizophrenic?
-            if db_object.schizophrenic.state == 'default'
-              yml[o].keys.each do |attr|
-                db_object[attr] = yml[o][attr]
-              end
-              db_object.save
+          parse_yml_for o
+        end
+        yml
+      end
+
+      def parse_yml_for primary_key
+        yml = get_yml
+        db_object = self.find(primary_key) rescue nil
+        if db_object
+          raise "There is already a #{db_object.class} with id #{db_object.id} in the database." unless db_object.schizophrenic?
+          if db_object.schizophrenic.state == 'default'
+            yml[primary_key].keys.each do |attr|
+              db_object[attr] = yml[primary_key][attr]
             end
-          else
-            db_object = self.new
-            db_object[self.primary_key] = o
-            yml[o].keys.each do |attr|
-              db_object[attr] = yml[o][attr]
-            end
-            db_object.build_schizophrenic
-            db_object.schizophrenic.state = 'default'
             db_object.save_without_schizophrenia
           end
+        else
+          db_object = self.new
+          db_object[self.primary_key] = primary_key
+          yml[primary_key].keys.each do |attr|
+            db_object[attr] = yml[primary_key][attr]
+          end
+          db_object.build_schizophrenic
+          db_object.schizophrenic.state = 'default'
+          db_object.save_without_schizophrenia
+        end
+      end
+
+      private
+
+      def get_yml
+        filename = File.join(RAILS_ROOT, "db", "fixtures", "schizophrenia", self.name.pluralize.downcase + ".yml")
+        return {} unless File.exists?(filename)
+        yml = File.open(filename) do |yf|
+          YAML::load( yf )
         end
         yml
       end
@@ -66,9 +78,24 @@ module Schizophrenia
         return self.schizophrenic.present?
       end
 
+      def schizophrenia_state
+        self.schizophrenic.state if self.schizophrenic
+      end
+
       def save perform_validation = true
-        self.schizophrenic.state = 'modified' if self.schizophrenic
+        if self.schizophrenic
+          self.schizophrenic.state = 'modified'
+          self.schizophrenic.save
+        end
         save_without_schizophrenia perform_validation
+      end
+
+      def reset
+        self.schizophrenic.state = 'default'
+        self.schizophrenic.save
+
+        self.class.parse_yml_for self[self.class.primary_key]
+        self.reload
       end
     end
   end

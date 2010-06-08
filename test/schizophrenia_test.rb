@@ -26,7 +26,7 @@ class SchizophreniaTest < Test::Unit::TestCase
   end
 
   def test_create_objects_from_yml
-    assert_equal 2, Car.count
+    assert_equal 3, Car.count
     c1 = Car.find(1)
     assert_equal "Lotus", c1.brand
     assert_equal "Elise", c1.model
@@ -42,15 +42,47 @@ class SchizophreniaTest < Test::Unit::TestCase
 
   def test_object_attributes_are_updated_if_not_modified
     c = Car.find(1)
-    assert_equal c.brand, "Lotus"
+    assert_equal "Lotus", c.brand
+    assert_equal "default", c.schizophrenia_state
 
-    c.update_attribute(:brand, "Toyota")
+    c.brand = "Toyota"
     c.save_without_schizophrenia
     c.reload
-    assert_equal c.brand, "Toyota"
+    assert_equal "Toyota", c.brand
+    assert_equal "default", c.schizophrenia_state
 
-    Car.parse_yml_representation
+    Car.parse_yml
     c.reload
-    assert_equal c.brand, "Lotus"
+    assert_equal "Lotus", c.brand
+  end
+
+  def test_object_attributes_are_not_updated_if_modified
+    c = Car.find(2)
+    assert_equal "Porsche", c.brand
+
+    c.brand = "VW"
+    c.save
+    c.reload
+    assert_equal "VW", c.brand
+    assert_equal "modified", c.schizophrenia_state
+
+    Car.parse_yml
+    c.reload
+    assert_equal "VW", c.brand
+  end
+
+  def test_reset
+    c = Car.find(3)
+    assert_equal "Ferrari", c.brand
+
+    c.brand = "Fiat"
+    c.save
+    c.reload
+
+    assert_equal "Fiat", c.brand
+    c.reset
+    c.reload
+
+    assert_equal "Ferrari", c.brand
   end
 end
