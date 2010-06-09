@@ -1,7 +1,8 @@
 # schizophrenia
 
 schizophrenia makes it possible to keep seed and and live data transparently in parallel. In contrast to other seed data
-approaches schizophrenia keeps your database and the seed definition in sync unless you've overridden it in the database.
+approaches schizophrenia keeps the seed definition and your database in sync automagically unless you've overridden it
+in the database.
 
 # Installation
 
