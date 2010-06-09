@@ -13,18 +13,32 @@ overridden it in the database.
     rake db:migrate
 
 ### As a gem
-Add the following line to your config/environment.rb file:
+Add the following line to your **config/environment.rb** file:
     config.gem "has_alter_ego"
 Then
     gem install has_alter_ego
     script/generate has_alter_ego
     rake db:migrate
 
+Rails 3
+### As a plugin
+    rails plugin install git://github.com/aduffeck/has_alter_ego.git
+    rails generate has_alter_ego
+    rake db:migrate
+
+### As a gem
+Add the following line to your **Gemfile** file:
+    gem "has_alter_ego"
+Then
+    bundle install
+    rails generate has_alter_ego
+    rake db:migrate
+
 # Usage
 
-The seed data is defined in YAML files called after the model's table. The files are expected in db/fixtures/alter_egos.
+The seed data is defined in YAML files called after the model's table. The files are expected in **db/fixtures/alter_egos**.
 
-Say you have a Model Car. has_alter_ego is enabled with the has_alter_ego method:
+Say you have a Model Car. has_alter_ego is enabled with the *has_alter_ego* method:
 
     create_table :cars do |t|
       t.string :brand
@@ -36,7 +50,7 @@ Say you have a Model Car. has_alter_ego is enabled with the has_alter_ego method
       has_alter_ego
     end
 
-You would then create a file db/fixtures/alter_egos/cars.yml with the seed data:
+You would then create a file **db/fixtures/alter_egos/cars.yml** with the seed data:
 
     1:
       brand: Lotus
