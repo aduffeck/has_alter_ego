@@ -36,7 +36,7 @@ Say you have a Model Car. has_alter_ego is enabled with the has_alter_ego method
       has_alter_ego
     end
 
-You would then create a file db/fixtures/has_alter_ego/cars.yml with the seed data:
+You would then create a file db/fixtures/alter_egos/cars.yml with the seed data:
 
     1:
       brand: Lotus
