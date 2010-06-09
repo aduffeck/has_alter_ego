@@ -52,7 +52,7 @@ and you'd automagically have those objects available in your database.
     => #<Car id: 1, brand: "Lotus", model: "Elise">
 
 Whenever the seed definition changes the objects in the database inherit the changes unless they have been overridden.
-You can check if an object was created by the seed definition with schizophrenic?:
+You can check if an object was created from seed definition with *schizophrenic?*:
 
     @car = Car.find(1)
     @car.schizophrenic?
@@ -61,8 +61,9 @@ You can check if an object was created by the seed definition with schizophrenic
     Car.new.schizophrenic?
     => false
 
-    # schizophrenia_state tells whether an object has been overridden
-    # "modified" objects will no longer inherit changes to the seed data
+The method *schizophrenia_state* tells whether an object has been overridden. "modified" objects will no longer inherit
+changes to the seed data.
+
     @car.schizophrenia_state
     => "default"
 
@@ -73,7 +74,7 @@ You can check if an object was created by the seed definition with schizophrenic
     @car.schizophrenia_state
     => "modified"
 
-    # reset reverts the local changes and activates the synchronization again
+*reset* reverts the local changes and activates the synchronization again:
     @car.reset
     => #<Car id: 1, brand: "Lotus", model: "Elise">
     @car.schizophrenia_state
