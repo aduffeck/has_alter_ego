@@ -74,6 +74,14 @@ changes to the seed data.
     @car.schizophrenia_state
     => "modified"
 
+If you don't want to inherit changes for an object without actually modifying it you can use *pin!*:
+
+    @car.pin!
+    => true
+    @car.schizophrenia_state
+    => "pinned"
+
+
 *reset* reverts the local changes and activates the synchronization again:
     @car.reset
     => #<Car id: 1, brand: "Lotus", model: "Elise">

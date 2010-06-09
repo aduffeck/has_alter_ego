@@ -65,6 +65,23 @@ class SchizophreniaTest < Test::Unit::TestCase
     assert_equal "Lotus", c.brand
   end
 
+  def test_object_attributes_are_not_updated_if_pinned
+    c = Car.find(2)
+    c.reset
+    assert_equal "Porsche", c.brand
+
+    c.brand = "VW"
+    c.save_without_schizophrenia
+    c.pin!
+    c.reload
+    assert_equal "VW", c.brand
+    assert_equal "pinned", c.schizophrenia_state
+
+    Car.parse_yml
+    c.reload
+    assert_equal "VW", c.brand
+  end
+
   def test_object_attributes_are_not_updated_if_modified
     c = Car.find(2)
     assert_equal "Porsche", c.brand

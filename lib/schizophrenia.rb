@@ -91,6 +91,11 @@ module Schizophrenia
         save_without_schizophrenia perform_validation
       end
 
+      def pin!
+        self.schizophrenic.state = 'pinned'
+        self.schizophrenic.save
+      end
+
       def reset
         self.schizophrenic.state = 'default'
         self.schizophrenic.save
