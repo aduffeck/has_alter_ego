@@ -1,30 +1,30 @@
-# schizophrenia
+# has_alter_ego
 
-schizophrenia makes it possible to keep seed and live data transparently in parallel. In contrast to other seed
-data approaches schizophrenia synchronizes the seed definitions with your database objects automagically unless you've
+has_alter_ego makes it possible to keep seed and live data transparently in parallel. In contrast to other seed
+data approaches has_alter_ego synchronizes the seed definitions with your database objects automagically unless you've
 overridden it in the database.
 
 # Installation
 
 ## Rails 2.3.x
 ### As a plugin
-    script/plugin install git://github.com/aduffeck/schizophrenia.git
-    script/generate schizophrenia
+    script/plugin install git://github.com/aduffeck/has_alter_ego.git
+    script/generate has_alter_ego
     rake db:migrate
 
 ### As a gem
 Add the following line to your config/environment.rb file:
-    config.gem "schizophrenia"
+    config.gem "has_alter_ego"
 Then
-    gem install schizophrenia
-    script/generate schizophrenia
+    gem install has_alter_ego
+    script/generate has_alter_ego
     rake db:migrate
 
 # Usage
 
-The seed data is defined in YAML files called after the model's table. The files are expected in db/fixtures/schizophrenia.
+The seed data is defined in YAML files called after the model's table. The files are expected in db/fixtures/alter_egos.
 
-Say you have a Model Car. schizophrenia is enabled with the has_schizophrenia method:
+Say you have a Model Car. has_alter_ego is enabled with the has_alter_ego method:
 
     create_table :cars do |t|
       t.string :brand
@@ -33,10 +33,10 @@ Say you have a Model Car. schizophrenia is enabled with the has_schizophrenia me
 
 
     class Car < ActiveRecord::Base
-      has_schizophrenia
+      has_alter_ego
     end
 
-You would then create a file db/fixtures/schizophrenia/cars.yml with the seed data:
+You would then create a file db/fixtures/has_alter_ego/cars.yml with the seed data:
 
     1:
       brand: Lotus
@@ -60,40 +60,40 @@ and you'd automagically have those objects available in your database.
     => #<Car id: 1, brand: "Lotus", model: "Elise">
 
 Whenever the seed definition changes the objects in the database inherit the changes unless they have been overridden.
-You can check if an object was created from seed definition with *schizophrenic?*:
+You can check if an object was created from seed definition with *has_alter_ego?*:
 
     @car = Car.find(1)
-    @car.schizophrenic?
+    @car.has_alter_ego?
     => true
 
-    Car.new.schizophrenic?
+    Car.new.has_alter_ego?
     => false
 
-The method *schizophrenia_state* tells whether an object has been overridden. "modified" objects will no longer inherit
+The method *alter_ego_state* tells whether an object has been overridden. "modified" objects will no longer inherit
 changes to the seed data.
 
-    @car.schizophrenia_state
+    @car.alter_ego_state
     => "default"
 
     @car.update_attribute(:model, "foo")
     => true
     @car
     => #<Car id: 1, brand: "Lotus", model: "foo">
-    @car.schizophrenia_state
+    @car.alter_ego_state
     => "modified"
 
 If you don't want to inherit changes for an object without actually modifying it you can use *pin!*:
 
     @car.pin!
     => true
-    @car.schizophrenia_state
+    @car.alter_ego_state
     => "pinned"
 
 
 *reset* reverts the changes in the database and activates the synchronization again:
     @car.reset
     => #<Car id: 1, brand: "Lotus", model: "Elise">
-    @car.schizophrenia_state
+    @car.alter_ego_state
     => "default"
 
 

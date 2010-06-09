@@ -5,14 +5,14 @@ require 'active_record'
 require 'test/unit'
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
 
-require File.dirname(__FILE__) + '/../lib/schizophrenia'
+require File.dirname(__FILE__) + '/../lib/has_alter_ego'
 RAILS_ROOT = File.dirname(__FILE__)
 
 silence_stream(STDOUT) do
   ActiveRecord::Schema.define do
-    create_table :schizophrenics do |t|
-      t.string :schizophrenic_object_id
-      t.string :schizophrenic_object_type, :limit => 40
+    create_table :alter_egos do |t|
+      t.string :alter_ego_object_id
+      t.string :alter_ego_object_type, :limit => 40
       t.string :state
     end
 

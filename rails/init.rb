@@ -1,1 +1,1 @@
-require 'schizophrenia'
+require 'has_alter_ego'

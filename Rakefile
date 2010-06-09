@@ -6,7 +6,7 @@ require "rake/gempackagetask"
 desc 'Default: run unit tests.'
 task :default => :test
 
-desc 'Test the schizophrenia plugin.'
+desc 'Test the has_alter_ego plugin.'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
   t.libs << 'test'
@@ -14,7 +14,7 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = true
 end
 
-desc 'Generate documentation for the schizophrenia plugin.'
+desc 'Generate documentation for the has_alter_ego plugin.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title    = 'Schizophrenia'
@@ -23,4 +23,4 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-Rake::GemPackageTask.new(eval(File.read("schizophrenia.gemspec"))) { |pkg| }
+Rake::GemPackageTask.new(eval(File.read("has_alter_ego.gemspec"))) { |pkg| }
