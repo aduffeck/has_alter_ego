@@ -64,7 +64,7 @@ module Schizophrenia
       private
 
       def get_yml
-        filename = File.join(RAILS_ROOT, "db", "fixtures", "schizophrenia", self.name.pluralize.downcase + ".yml")
+        filename = File.join(RAILS_ROOT, "db", "fixtures", "schizophrenia", self.table_name + ".yml")
         return {} unless File.exists?(filename)
         yml = File.open(filename) do |yf|
           YAML::load( yf )
