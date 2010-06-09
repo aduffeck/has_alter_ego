@@ -21,10 +21,11 @@ module Schizophrenia
 
       # Reserve the first n IDs for stubbed objects
       def reserve_space space
-        return if self.last and self.last.id >= space
+        return unless self.columns_hash[self.primary_key].klass == Fixnum
+        return if self.last and self.last[self.primary_key] >= space
 
         o = self.new
-        o.id = space
+        o[self.primary_key] = space
         o.save_without_validation
         o.destroy
         return
