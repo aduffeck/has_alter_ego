@@ -1,11 +1,12 @@
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
+require "rake/gempackagetask"
 
 desc 'Default: run unit tests.'
 task :default => :test
 
-desc 'Test the has_schizophrenia plugin.'
+desc 'Test the schizophrenia plugin.'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
   t.libs << 'test'
@@ -13,11 +14,13 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = true
 end
 
-desc 'Generate documentation for the has_schizophrenia plugin.'
+desc 'Generate documentation for the schizophrenia plugin.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'HasSchizophrenia'
+  rdoc.title    = 'Schizophrenia'
   rdoc.options << '--line-numbers' << '--inline-source'
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+Rake::GemPackageTask.new(eval(File.read("schizophrenia.gemspec"))) { |pkg| }

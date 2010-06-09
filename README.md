@@ -1,14 +1,22 @@
 # schizophrenia
 
-schizophrenia makes it possible to keep seed and and live data transparently in parallel. In contrast to other seed data
-approaches schizophrenia keeps the seed definition and your database in sync automagically unless you've overridden it
-in the database.
+schizophrenia makes it possible to keep seed and live data transparently in parallel. In contrast to other seed
+data approaches schizophrenia synchronizes the seed definitions with your database objects automagically unless you've
+overridden it in the database.
 
 # Installation
 
 ## Rails 2.3.x
 ### As a plugin
     script/plugin install git://github.com/aduffeck/schizophrenia.git
+    script/generate schizophrenia
+    rake db:migrate
+
+### As a gem
+Add the following line to your config/environment.rb file:
+    config.gem "schizophrenia"
+Then
+    gem install schizophrenia
     script/generate schizophrenia
     rake db:migrate
 
@@ -28,7 +36,7 @@ Say you have a Model Car. schizophrenia is enabled with the has_schizophrenia me
       has_schizophrenia
     end
 
-You would then create a file db/fixtures/schizophrenia/cars.yml with the data:
+You would then create a file db/fixtures/schizophrenia/cars.yml with the seed data:
 
     1:
       brand: Lotus
@@ -82,11 +90,11 @@ If you don't want to inherit changes for an object without actually modifying it
     => "pinned"
 
 
-*reset* reverts the local changes and activates the synchronization again:
+*reset* reverts the changes in the database and activates the synchronization again:
     @car.reset
     => #<Car id: 1, brand: "Lotus", model: "Elise">
     @car.schizophrenia_state
     => "default"
 
 
-Copyright (c) 2010 Andre Duffeck, released under the MIT license
+Copyright (c) 2010 André Duffeck, released under the MIT license
