@@ -88,6 +88,9 @@ module HasAlterEgo
           self.alter_ego.state = 'modified'
           self.alter_ego.save
         end
+        if ActiveRecord::VERSION::MAJOR == 3 and !perform_validation.is_a?(Hash)
+          perform_validation = {:validate => perform_validation}
+        end
         save_without_alter_ego perform_validation
       end
 
