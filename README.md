@@ -74,8 +74,9 @@ and you'd automagically have those objects available in your database.
     => #<Car id: 1, brand: "Lotus", model: "Elise">
 
 Whenever the seed definition changes the objects in the database inherit the changes unless they have been overridden.
+When a seed object was destroyed in the database it will not be added again.
 
-Note that if the table has a numeric primary key has_alter_ego reserves the first n IDs for seed objects (default=1000),
+**Note:** If the table has a numeric primary key has_alter_ego reserves the first n IDs for seed objects (default=1000),
 so the next non-seed object will get the ID 1001.
 The number of reserved objects can be set with the optional *:reserved_space* parameter, e.g.
 
@@ -83,6 +84,8 @@ The number of reserved objects can be set with the optional *:reserved_space* pa
 
 You always have to make sure that no seed IDs clash with IDs in the database.
 
+
+## Advanced stuff
 You can check if an object was created from seed definition with *has_alter_ego?*:
 
     @car = Car.find(1)
@@ -104,8 +107,6 @@ changes to the seed data.
     => #<Car id: 1, brand: "Lotus", model: "foo">
     @car.alter_ego_state
     => "modified"
-
-## Advanced stuff
 
 If you don't want to inherit changes for an object without actually modifying it you can use *pin!*:
 

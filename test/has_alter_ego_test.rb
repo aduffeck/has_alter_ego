@@ -35,7 +35,7 @@ class HasAlterEgoTest < Test::Unit::TestCase
   end
 
   def test_create_objects_from_yml
-    assert_equal 4, Car.count
+    assert_equal 6, Car.count
     c1 = Car.find(1)
     assert_equal "Lotus", c1.brand
     assert_equal "Elise", c1.model
@@ -152,5 +152,24 @@ class HasAlterEgoTest < Test::Unit::TestCase
     orangejuice.color = "yellow"
     orangejuice.save
     assert !orangejuice.has_alter_ego?
+  end
+
+  def test_destroyed_object_leaves_destroyed_alter_ego
+    c = Car.find(6)
+    alter_ego = c.alter_ego
+    assert_equal "default", alter_ego.state
+
+    c.destroy
+    alter_ego.reload
+    assert_equal "destroyed", alter_ego.state
+  end
+
+  def test_destroyed_objects_do_not_return
+    assert Car.find_by_id(5)
+    Car.find_by_id(5).destroy
+    assert !Car.find_by_id(5)
+
+    Car.parse_yml
+    assert !Car.find_by_id(5)
   end
 end

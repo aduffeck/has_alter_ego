@@ -13,6 +13,7 @@ module HasAlterEgo
         class_eval do
           has_one :alter_ego, :as => :alter_ego_object
           alias_method :save_without_alter_ego, :save
+          alias_method :destroy_without_alter_ego, :destroy
           send :include, InstanceMethods
           reserve_space(opts[:reserved_space])
           parse_yml
@@ -51,6 +52,10 @@ module HasAlterEgo
             db_object.save_without_alter_ego
           end
         else
+          # Check for destroyed alter_egos
+          alter_ego = AlterEgo.find_by_alter_ego_object_id_and_alter_ego_object_type(primary_key, self.name)
+          return if alter_ego.try(:state) == "destroyed"
+
           db_object = self.new
           db_object[self.primary_key] = primary_key
           yml[primary_key].keys.each do |attr|
@@ -94,9 +99,21 @@ module HasAlterEgo
         save_without_alter_ego perform_validation
       end
 
+      def destroy
+        if self.alter_ego
+          self.alter_ego.state = 'destroyed'
+          self.alter_ego.save
+        end
+        destroy_without_alter_ego
+      end
+
       def pin!
         self.alter_ego.state = 'pinned'
         self.alter_ego.save
+      end
+
+      def ban!
+
       end
 
       def reset
