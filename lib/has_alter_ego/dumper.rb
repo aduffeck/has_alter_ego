@@ -20,6 +20,9 @@ module HasAlterEgo
           next if a == klaas.primary_key
           yml[key][a] = o[a]
         end
+        o.build_alter_ego unless o.alter_ego
+        o.alter_ego.state = 'default'
+        o.save_without_alter_ego
       end
       File.open(yml_file, File::WRONLY|File::TRUNC|File::CREAT) do |yf|
         yf.write yml.to_yaml
