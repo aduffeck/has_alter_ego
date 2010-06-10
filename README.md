@@ -127,6 +127,6 @@ has_alter_ego has a rake task for dumping the current database content into a se
 
     rake has_alter_ego::dump MODEL=Car
 
-That will fill **db/fixtures/alter_egos/car** with the database objects. 
+That will fill **db/fixtures/alter_egos/cars.yml** with the database objects. 
 
 Copyright (c) 2010 André Duffeck, released under the MIT license
