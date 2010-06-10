@@ -20,7 +20,7 @@ Then
     script/generate has_alter_ego
     rake db:migrate
 
-Rails 3
+## Rails 3
 ### As a plugin
     rails plugin install git://github.com/aduffeck/has_alter_ego.git
     rails generate has_alter_ego
