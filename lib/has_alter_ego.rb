@@ -1,17 +1,6 @@
 require File.join(File.dirname(__FILE__), "has_alter_ego", "alter_ego")
 
 module HasAlterEgo
-  # Reserve the first n IDs for stubbed objects
-  def self.reserve_space klaas, space
-    return unless klaas.columns_hash[klaas.primary_key].klass == Fixnum
-    return if klaas.last and klaas.last[klaas.primary_key] >= space
-
-    o = klaas.new
-    o[klaas.primary_key] = space
-    o.save_without_alter_ego
-    o.destroy
-  end
-
   module ActiveRecordAdapater
     def self.included(base)
       base.send :extend, ClassMethods
@@ -25,9 +14,21 @@ module HasAlterEgo
           has_one :alter_ego, :as => :alter_ego_object
           alias_method :save_without_alter_ego, :save
           send :include, InstanceMethods
-          HasAlterEgo.reserve_space(self, opts[:reserved_space])
+          reserve_space(opts[:reserved_space])
           parse_yml
         end
+      end
+
+      # Reserve the first n IDs for stubbed objects
+      def reserve_space space
+        return unless self.columns_hash[self.primary_key].klass == Fixnum
+        return if self.last and self.last[self.primary_key] >= space
+
+        o = self.new
+        o[self.primary_key] = space
+        o.save_without_alter_ego
+        o.destroy
+        return
       end
 
       def parse_yml

@@ -24,7 +24,6 @@ module HasAlterEgo
       File.open(yml_file, File::WRONLY|File::TRUNC|File::CREAT) do |yf|
         yf.write yml.to_yaml
       end
-      HasAlterEgo.reserve_space(klaas, 1000)
     end
   end
 end
