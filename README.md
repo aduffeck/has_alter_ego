@@ -35,10 +35,10 @@ Then
     rake db:migrate
 
 # Usage
-
+## General
 The seed data is defined in YAML files called after the model's table. The files are expected in **db/fixtures/alter_egos**.
 
-Say you have a Model Car. has_alter_ego is enabled with the *has_alter_ego* method:
+Say you have a Model *Car*. has_alter_ego is enabled with the *has_alter_ego* method:
 
     create_table :cars do |t|
       t.string :brand
@@ -50,7 +50,7 @@ Say you have a Model Car. has_alter_ego is enabled with the *has_alter_ego* meth
       has_alter_ego
     end
 
-You would then create a file **db/fixtures/alter_egos/cars.yml** with the seed data:
+You could then create a file **db/fixtures/alter_egos/cars.yml** with the seed data:
 
     1:
       brand: Lotus
@@ -74,6 +74,15 @@ and you'd automagically have those objects available in your database.
     => #<Car id: 1, brand: "Lotus", model: "Elise">
 
 Whenever the seed definition changes the objects in the database inherit the changes unless they have been overridden.
+
+Note that if the table has a numeric primary key has_alter_ego reserves the first n IDs for seed objects (default=1000),
+so the next non-seed object will get the ID 1001.
+The number of reserved objects can be set with the optional *:reserved_space* parameter, e.g.
+
+    has_alter_ego :reserved_space => 5000
+
+You always have to make sure that no seed IDs clash with IDs in the database.
+
 You can check if an object was created from seed definition with *has_alter_ego?*:
 
     @car = Car.find(1)
@@ -96,6 +105,8 @@ changes to the seed data.
     @car.alter_ego_state
     => "modified"
 
+## Advanced stuff
+
 If you don't want to inherit changes for an object without actually modifying it you can use *pin!*:
 
     @car.pin!
@@ -110,5 +121,12 @@ If you don't want to inherit changes for an object without actually modifying it
     @car.alter_ego_state
     => "default"
 
+# Generating seed data from the database
+
+has_alter_ego has a rake task for dumping the current database content into a seed file. It is called like this:
+
+    rake has_alter_ego::dump MODEL=Car
+
+That will fill **db/fixtures/alter_egos/car** with the database objects. 
 
 Copyright (c) 2010 André Duffeck, released under the MIT license
