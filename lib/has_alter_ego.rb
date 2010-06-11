@@ -103,6 +103,10 @@ module HasAlterEgo
         save_without_alter_ego perform_validation
       end
 
+      def save!
+        save || raise(RecordNotSaved)
+      end
+
       def destroy
         if self.alter_ego
           self.alter_ego.state = 'destroyed'
