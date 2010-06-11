@@ -1,3 +1,7 @@
+# 0.0.4 (2010-06-11)
+* fix some bugs esp. wrt associations
+* added a on_seed hook which allows for custom login on seed
+
 # 0.0.3 (2010-06-10)
 * Add a rake task for dumping the current database objects into an alter_egos YAML file
 * Do not bring back destroyed objects
