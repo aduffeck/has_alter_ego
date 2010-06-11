@@ -1,8 +1,20 @@
 require 'test_helper'
 
+
+class Seller < ActiveRecord::Base
+  has_and_belongs_to_many :cars
+  has_alter_ego
+end
+
 class Car < ActiveRecord::Base
   has_many :tires
+  has_and_belongs_to_many :sellers
   has_alter_ego
+  attr_accessor :tires_count
+
+  def on_seed attributes
+    self[:tires_count] = attributes["custom_data"]["tires"] if attributes["custom_data"]
+  end
 end
 
 class Bike < ActiveRecord::Base
@@ -171,5 +183,27 @@ class HasAlterEgoTest < Test::Unit::TestCase
 
     Car.parse_yml
     assert !Car.find_by_id(5)
+  end
+
+  def test_on_seed
+    assert_nil Car.find(1).tires_count
+    assert_equal 4, Car.find(4)[:tires_count]
+  end
+
+  def test_habtm
+    assert_equal [1,2], Car.find(1).seller_ids
+    assert_equal 2, Car.find(1).sellers.size
+
+    c = Car.find(1)
+    c.sellers = [Seller.first]
+    c.reload
+
+    assert_equal [Seller.first], c.sellers
+    assert_equal [Seller.first.id], c.seller_ids
+
+    c.reset
+    c.reload
+
+    assert_equal [1,2], c.seller_ids
   end
 end

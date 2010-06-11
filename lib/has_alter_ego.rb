@@ -28,7 +28,7 @@ module HasAlterEgo
         o = self.new
         o[self.primary_key] = space
         o.save_without_alter_ego
-        o.destroy
+        o.delete
         return
       end
 
@@ -47,8 +47,10 @@ module HasAlterEgo
           raise "There is already a #{db_object.class} with id #{db_object.id} in the database." unless db_object.has_alter_ego?
           if db_object.alter_ego.state == 'default'
             yml[primary_key].keys.each do |attr|
-              db_object[attr] = yml[primary_key][attr]
+              next unless db_object.respond_to?(attr)
+              db_object.send(attr+"=", yml[primary_key][attr])
             end
+            db_object.on_seed(yml[primary_key])
             db_object.save_without_alter_ego
           end
         else
@@ -59,10 +61,12 @@ module HasAlterEgo
           db_object = self.new
           db_object[self.primary_key] = primary_key
           yml[primary_key].keys.each do |attr|
-            db_object[attr] = yml[primary_key][attr]
+            next unless db_object.respond_to?(attr)
+            db_object.send(attr+"=" , yml[primary_key][attr])
           end
           db_object.build_alter_ego
           db_object.alter_ego.state = 'default'
+          db_object.on_seed(yml[primary_key])
           db_object.save_without_alter_ego
         end
       end
@@ -112,16 +116,16 @@ module HasAlterEgo
         self.alter_ego.save
       end
 
-      def ban!
-
-      end
-
       def reset
         self.alter_ego.state = 'default'
         self.alter_ego.save
 
         self.class.parse_yml_for self[self.class.primary_key]
         self.reload
+      end
+
+      def on_seed attributes
+        # Not implemented
       end
     end
   end

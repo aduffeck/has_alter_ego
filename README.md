@@ -7,11 +7,6 @@ overridden it in the database.
 # Installation
 
 ## Rails 2.3.x
-### As a plugin
-    script/plugin install git://github.com/aduffeck/has_alter_ego.git
-    script/generate has_alter_ego
-    rake db:migrate
-
 ### As a gem
 Add the following line to your **config/environment.rb** file:
     config.gem "has_alter_ego"
@@ -20,12 +15,13 @@ Then
     script/generate has_alter_ego
     rake db:migrate
 
-## Rails 3
 ### As a plugin
-    rails plugin install git://github.com/aduffeck/has_alter_ego.git
-    rails generate has_alter_ego
+    script/plugin install git://github.com/aduffeck/has_alter_ego.git
+    script/generate has_alter_ego
     rake db:migrate
 
+
+## Rails 3
 ### As a gem
 Add the following line to your **Gemfile** file:
     gem "has_alter_ego"
@@ -33,6 +29,12 @@ Then
     bundle install
     rails generate has_alter_ego
     rake db:migrate
+
+### As a plugin
+    rails plugin install git://github.com/aduffeck/has_alter_ego.git
+    rails generate has_alter_ego
+    rake db:migrate
+
 
 # Usage
 ## General
@@ -121,6 +123,21 @@ If you don't want to inherit changes for an object without actually modifying it
     => #<Car id: 1, brand: "Lotus", model: "Elise">
     @car.alter_ego_state
     => "default"
+
+# Custom logic on seed
+
+has_alter_ego provides a hook for adding custom logic when an object is created or updated from the seed definitions.
+Just add a method *on_seed(attributes)* to your Model and you'll have access to all the seed attributes.
+**Note:** You should not call save from within the hook or the objects will be marked as modified.
+
+Example:
+    class Car < ActiveRecord::Base
+      has_alter_ego
+
+      def on_seed(attributes)
+        self.price = attributes["price_without_vat"] * VAT_FACTOR
+      end
+    end
 
 # Generating seed data from the database
 

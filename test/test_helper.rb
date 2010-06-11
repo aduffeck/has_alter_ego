@@ -19,6 +19,7 @@ silence_stream(STDOUT) do
     create_table :cars do |t|
       t.string :brand
       t.string :model
+      t.integer :tires_count
     end
 
     create_table :bikes
@@ -32,5 +33,14 @@ silence_stream(STDOUT) do
       t.string :name
       t.string :color
     end
+
+    create_table :sellers do |t|
+      t.string :name
+    end
+    create_table :cars_sellers, :id => false do |t|
+      t.integer :car_id
+      t.integer :seller_id
+    end
+
   end
 end

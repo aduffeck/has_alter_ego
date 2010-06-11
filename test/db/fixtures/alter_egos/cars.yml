@@ -1,6 +1,7 @@
 1:
   brand: Lotus
   model: Elise
+  seller_ids: [1, 2]
 
 2:
   brand: Porsche
@@ -13,6 +14,8 @@
 4:
   brand: Corvette
   model: C5
+  custom_data:
+    tires: 4
 
 5:
   brand: Fiat
