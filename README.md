@@ -128,6 +128,7 @@ If you don't want to inherit changes for an object without actually modifying it
 
 has_alter_ego provides a hook for adding custom logic when an object is created or updated from the seed definitions.
 Just add a method *on_seed(attributes)* to your Model and you'll have access to all the seed attributes.
+
 **Note:** You should not call save from within the hook or the objects will be marked as modified.
 
 Example:
