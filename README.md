@@ -130,16 +130,16 @@ It's possible to define dynamic associations in the seed data which is helpful i
 not known or the associations depends on the state of the objects. This is done by appending *_by* clauses to the
 association name, similar to the dynamic finders in ActiveRecord::Base.
 
-**Examples**
-    **db/fixtures/car.yml:**
+**Example:**
+db/fixtures/car.yml:
     1:
       brand: Lotus
       model: Elise
       category_id: 3                                   # Static way of specifying associations
-      category_by_name: Sport                          # = @car.category = Category.find_by_name("Sport")
+      category_by_name: Sport                          # => @car.category = Category.find_by_name("Sport")
 
-      sellers_by_name_and_active: [Hugo, true]         # = @car.sellers = Seller.find_all_by_name_and_active("Hugo", true)
-      sellers_by_name_and_active: [[Hugo, Egon], true] # = @car.sellers = Seller.find_all_by_name_and_active(["Hugo", "Egon"], true)
+      sellers_by_name_and_active: [Hugo, true]         # @car.sellers = Seller.find_all_by_name_and_active("Hugo", true)
+      sellers_by_name_and_active: [[Hugo, Egon], true] # @car.sellers = Seller.find_all_by_name_and_active(["Hugo", "Egon"], true)
 
 
 # Custom logic on seed
