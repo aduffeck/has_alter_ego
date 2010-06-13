@@ -124,6 +124,24 @@ If you don't want to inherit changes for an object without actually modifying it
     @car.alter_ego_state
     => "default"
 
+# Smart associations
+
+It's possible to define dynamic associations in the seed data which is helpful if the IDs of the associated objects are
+not known or the associations depends on the state of the objects. This is done by appending *_by* clauses to the
+association name, similar to the dynamic finders in ActiveRecord::Base.
+
+**Examples**
+    **db/fixtures/car.yml:**
+    1:
+      brand: Lotus
+      model: Elise
+      category_id: 3                                   # Static way of specifying associations
+      category_by_name: Sport                          # = @car.category = Category.find_by_name("Sport")
+
+      sellers_by_name_and_active: [Hugo, true]         # = @car.sellers = Seller.find_all_by_name_and_active("Hugo", true)
+      sellers_by_name_and_active: [[Hugo, Egon], true] # = @car.sellers = Seller.find_all_by_name_and_active(["Hugo", "Egon"], true)
+
+
 # Custom logic on seed
 
 has_alter_ego provides a hook for adding custom logic when an object is created or updated from the seed definitions.

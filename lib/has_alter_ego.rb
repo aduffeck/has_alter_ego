@@ -46,10 +46,7 @@ module HasAlterEgo
         if db_object
           raise "There is already a #{db_object.class} with id #{db_object.id} in the database." unless db_object.has_alter_ego?
           if db_object.alter_ego.state == 'default'
-            yml[primary_key].keys.each do |attr|
-              next unless db_object.respond_to?(attr)
-              db_object.send(attr+"=", yml[primary_key][attr])
-            end
+            assign_attributes db_object, yml[primary_key]
             db_object.on_seed(yml[primary_key])
             db_object.save_without_alter_ego
           end
@@ -60,10 +57,7 @@ module HasAlterEgo
 
           db_object = self.new
           db_object[self.primary_key] = primary_key
-          yml[primary_key].keys.each do |attr|
-            next unless db_object.respond_to?(attr)
-            db_object.send(attr+"=" , yml[primary_key][attr])
-          end
+          assign_attributes db_object, yml[primary_key]
           db_object.build_alter_ego
           db_object.alter_ego.state = 'default'
           db_object.on_seed(yml[primary_key])
@@ -71,7 +65,25 @@ module HasAlterEgo
         end
       end
 
-      private
+      def assign_attributes obj, yml
+        reflections = self.reflect_on_all_associations
+        yml.keys.each do |attr|
+          if obj.respond_to?(attr)
+            obj.send(attr+"=" , yml[attr])
+          else
+            # Handle smart associations
+            reflections.select{|r| attr.start_with?(r.name.to_s+"_by_")}.each do |r|
+              finder = [:has_one, :belongs_to].include?(r.macro) ? "find" : "find_all"
+              if attr.index("_and_")
+                objects = r.klass.send(attr.gsub(r.name.to_s, finder), *(yml[attr]))
+              else
+                objects = r.klass.send(attr.gsub(r.name.to_s, finder), yml[attr])
+              end
+              obj.send(r.name.to_s+"=", objects) if objects.present?
+            end
+          end
+        end
+      end
 
       def get_yml
         filename = File.join(RAILS_ROOT, "db", "fixtures", "alter_egos", self.table_name + ".yml")

@@ -1,36 +1,5 @@
 require 'test_helper'
 
-
-class Seller < ActiveRecord::Base
-  has_and_belongs_to_many :cars
-  has_alter_ego
-end
-
-class Car < ActiveRecord::Base
-  has_many :tires
-  has_and_belongs_to_many :sellers
-  has_alter_ego
-  attr_accessor :tires_count
-
-  def on_seed attributes
-    self[:tires_count] = attributes["custom_data"]["tires"] if attributes["custom_data"]
-  end
-end
-
-class Bike < ActiveRecord::Base
-end
-
-class Scooter < ActiveRecord::Base
-end
-
-class Tire < ActiveRecord::Base
-end
-
-class Drink < ActiveRecord::Base
-  set_primary_key :name
-  has_alter_ego
-end
-
 class HasAlterEgoTest < Test::Unit::TestCase
   def test_space_gets_reserved
     c = Car.create
@@ -205,5 +174,69 @@ class HasAlterEgoTest < Test::Unit::TestCase
     c.reload
 
     assert_equal [1,2], c.seller_ids
+  end
+
+  def test_smart_habtm
+    Car.destroy_all
+    AlterEgo.find_all_by_alter_ego_object_type("Car").map(&:destroy)
+    Car.class_eval do
+      def self.get_yml
+        return {1 => {
+                  "brand" => "Lotus",
+                  "model" => "Elise",
+                  "sellers_by_name" => ["Harald", "Hugo"]}}
+      end
+    end
+    Car.parse_yml
+    assert_equal 1, Car.count
+    assert_equal 2, Car.first.sellers.size
+    assert_equal [2,3].sort, Car.first.seller_ids.sort
+  end
+
+  def test_smart_has_many
+    Light.create(:color => "blue", :active => true)
+    Light.create(:color => "yellow", :active => true)
+    Light.create(:color => "red", :active => true)
+    Light.create(:color => "green", :active => false)
+    Bike.destroy_all
+    Bike.class_eval do
+      def self.get_yml
+        return {1 => {
+                  "lights_by_color_and_active" => [["blue", "yellow", "green"], true]}}
+      end
+    end
+    Bike.parse_yml
+    assert_equal 1, Bike.count
+    assert_equal 2, Bike.first.lights.size
+    assert_equal Light.find_all_by_color(["blue", "yellow"]), Bike.first.lights
+  end
+
+  def test_smart_has_one
+    Creator.create(:name => "Martin")
+    Creator.create(:name => "Mike")
+    Drink.destroy_all
+    Drink.class_eval do
+      def self.get_yml
+        return {1 => {
+                  "creator_by_name" => ["Mike"]}}
+      end
+    end
+    Drink.parse_yml
+    assert_equal 1, Drink.count
+    assert_equal Creator.find_by_name("Mike"), Drink.first.creator
+  end
+
+  def test_smart_belongs_to
+
+    Creator.class_eval do
+      def self.get_yml
+        return {1 => {
+                  "name" => "Bernd",
+                  "drink_by_name" => "water"}}
+      end
+    end
+    Creator.parse_yml
+    c = Creator.find_by_name "Bernd"
+    assert_equal Drink.find_by_name("water"), c.drink
   end
 end
