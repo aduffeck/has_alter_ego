@@ -1,8 +1,8 @@
 # 0.0.5 (2010-06-13)
 * Implemented smart associations, e.g.
-    category_by_name: Sport                          # => @car.category = Category.find_by_name("Sport")
-    sellers_by_name_and_active: [Hugo, true]         # @car.sellers = Seller.find_all_by_name_and_active("Hugo", true)
-    sellers_by_name_and_active: [[Hugo, Egon], true] # @car.sellers = Seller.find_all_by_name_and_active(["Hugo", "Egon"], true)
+      category_by_name: Sport                          # => @car.category = Category.find_by_name("Sport")
+      sellers_by_name_and_active: [Hugo, true]         # @car.sellers = Seller.find_all_by_name_and_active("Hugo", true)
+      sellers_by_name_and_active: [[Hugo, Egon], true] # @car.sellers = Seller.find_all_by_name_and_active(["Hugo", "Egon"], true)
 * mark objects as modified when saved with save!
 
 # 0.0.4 (2010-06-11)
