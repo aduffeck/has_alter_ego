@@ -14,6 +14,7 @@ module HasAlterEgo
           has_one :alter_ego, :as => :alter_ego_object
           alias_method :save_without_alter_ego, :save
           alias_method :destroy_without_alter_ego, :destroy
+          alias_method :alter_ego_with_type_fix, :alter_ego
           send :include, InstanceMethods
           reserve_space(opts[:reserved_space])
           parse_yml
@@ -52,7 +53,7 @@ module HasAlterEgo
           end
         else
           # Check for destroyed alter_egos
-          alter_ego = AlterEgo.find_by_alter_ego_object_id_and_alter_ego_object_type(primary_key, self.name)
+          alter_ego = AlterEgo.find_by_alter_ego_object_id_and_alter_ego_object_type(primary_key.to_s, self.name)
           return if alter_ego.try(:state) == "destroyed"
 
           db_object = self.new
@@ -96,6 +97,10 @@ module HasAlterEgo
     end
 
     module InstanceMethods
+      def alter_ego
+        return AlterEgo.find_by_alter_ego_object_id_and_alter_ego_object_type(self[self.class.primary_key].to_s, self.name)
+      end
+
       def has_alter_ego?
         return self.alter_ego.present?
       end
