@@ -1,3 +1,6 @@
+# 0.0.6 (2010-09-28)
+* Fixed a type mismatch problem with numeric ids
+
 # 0.0.5 (2010-06-13)
 * Implemented smart associations, e.g.
       category_by_name: Sport                          # => @car.category = Category.find_by_name("Sport")
