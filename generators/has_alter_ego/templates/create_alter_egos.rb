@@ -1,7 +1,7 @@
 class CreateAlterEgos < ActiveRecord::Migration
   def self.up
     create_table :alter_egos do |t|
-      t.string :alter_ego_object_id
+      t.integer :alter_ego_object_id
       t.string :alter_ego_object_type, :limit => 40
       t.string :state
     end

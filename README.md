@@ -78,8 +78,8 @@ and you'd automagically have those objects available in your database.
 Whenever the seed definition changes the objects in the database inherit the changes unless they have been overridden.
 When a seed object was destroyed in the database it will not be added again.
 
-**Note:** If the table has a numeric primary key has_alter_ego reserves the first n IDs for seed objects (default=1000),
-so the next non-seed object will get the ID 1001.
+**Note:** has_alter_ego reserves the first n IDs for seed objects (default=1000), so the next non-seed object will get
+the ID 1001.
 The number of reserved objects can be set with the optional *:reserved_space* parameter, e.g.
 
     has_alter_ego :reserved_space => 5000

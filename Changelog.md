@@ -1,3 +1,6 @@
+# 0.0.7 (2010-09-28)
+* non-numeric primary keys are no longer supported
+
 # 0.0.6 (2010-09-28)
 * Fixed a type mismatch problem with numeric ids
 
