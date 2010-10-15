@@ -22,44 +22,44 @@ module HasAlterEgo
 
       # Reserve the first n IDs for stubbed objects
       def reserve_space space
-        return if self.last and self.last[self.primary_key] >= space
+        return if self.last and self.last.id >= space
 
         o = self.new
-        o[self.primary_key] = space
+        o.id= space
         o.save_without_alter_ego
         o.delete
         return
       end
 
       def parse_yml
-        yml = get_yml
-        yml.keys.each do |o|
+        @yml = get_yml
+        @db_objects = self.find_all_by_id(@yml.keys, :include => :alter_ego) || []
+        @yml.keys.each do |o|
           parse_yml_for o
         end
-        yml
+        @yml
       end
 
-      def parse_yml_for primary_key
-        yml = get_yml
-        db_object = self.find(primary_key) rescue nil
+      def parse_yml_for id, reload = false
+        db_object = reload ? (self.find(id) rescue nil) : @db_objects.select{|o| o.id == id}.first
         if db_object
           raise "There is already a #{db_object.class} with id #{db_object.id} in the database." unless db_object.has_alter_ego?
           if db_object.alter_ego.state == 'default'
-            assign_attributes db_object, yml[primary_key]
-            db_object.on_seed(yml[primary_key])
+            assign_attributes db_object, @yml[id]
+            db_object.on_seed(@yml[id])
             db_object.save_without_alter_ego
           end
         else
           # Check for destroyed alter_egos
-          alter_ego = AlterEgo.find_by_alter_ego_object_id_and_alter_ego_object_type(primary_key, self.name)
+          alter_ego = AlterEgo.find_by_alter_ego_object_id_and_alter_ego_object_type(id, self.name)
           return if alter_ego.try(:state) == "destroyed"
 
           db_object = self.new
-          db_object[self.primary_key] = primary_key
-          assign_attributes db_object, yml[primary_key]
+          db_object.id = id
+          assign_attributes db_object, @yml[id]
           db_object.build_alter_ego
           db_object.alter_ego.state = 'default'
-          db_object.on_seed(yml[primary_key])
+          db_object.on_seed(@yml[id])
           db_object.save_without_alter_ego
         end
       end
@@ -135,7 +135,7 @@ module HasAlterEgo
         self.alter_ego.state = 'default'
         self.alter_ego.save
 
-        self.class.parse_yml_for self[self.class.primary_key]
+        self.class.parse_yml_for self.id, true
         self.reload
       end
 

@@ -35,14 +35,14 @@ silence_stream(STDOUT) do
       t.integer :car_id
     end
 
-    create_table :drinks, :id => false do |t|
+    create_table :drinks do |t|
       t.string :name
       t.string :color
     end
 
     create_table :creators do |t|
       t.string :name
-      t.string :drink_id
+      t.integer :drink_id
     end
 
     create_table :sellers do |t|
@@ -87,7 +87,6 @@ class Tire < ActiveRecord::Base
 end
 
 class Drink < ActiveRecord::Base
-  set_primary_key :name
   has_one :creator
   has_alter_ego
 end

@@ -109,32 +109,6 @@ class HasAlterEgoTest < Test::Unit::TestCase
     assert_equal 4, c.tires.size
   end
 
-  def test_different_primary_key
-    assert_equal 2, Drink.all.size
-    assert_equal "none", Drink.find("water").color
-
-    water = Drink.find("water")
-    assert water.has_alter_ego?
-    assert_equal "default", water.alter_ego_state
-
-    water.color = "blue"
-    water.save
-    water.reload
-    assert_equal "blue", water.color
-    assert_equal "modified", water.alter_ego_state
-
-    water.reset
-    water.reload
-    assert_equal "none", water.color
-    assert_equal "default", water.alter_ego_state
-
-    orangejuice = Drink.new
-    orangejuice.name = "orangejuice"
-    orangejuice.color = "yellow"
-    orangejuice.save
-    assert !orangejuice.has_alter_ego?
-  end
-
   def test_destroyed_object_leaves_destroyed_alter_ego
     c = Car.find(6)
     alter_ego = c.alter_ego
@@ -213,12 +187,15 @@ class HasAlterEgoTest < Test::Unit::TestCase
 
   def test_smart_has_one
     Creator.create(:name => "Martin")
-    Creator.create(:name => "Mike")
+    mike = Creator.create(:name => "Mike")
     Drink.destroy_all
+    AlterEgo.destroy_all("alter_ego_object_type = 'Drink'")
     Drink.class_eval do
       def self.get_yml
-        return {1 => {
-                  "creator_by_name" => ["Mike"]}}
+        return {1234 => {
+                  "name" => "water",
+                  "color" => "none",
+                  "creator_by_name" => "Mike"}}
       end
     end
     Drink.parse_yml
@@ -227,11 +204,10 @@ class HasAlterEgoTest < Test::Unit::TestCase
   end
 
   def test_smart_belongs_to
-
     Creator.class_eval do
       def self.get_yml
         return {1 => {
-                  "name" => "Bernd",
+                 "name" => "Bernd",
                   "drink_by_name" => "water"}}
       end
     end

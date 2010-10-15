@@ -1,5 +1,7 @@
-water:
+1:
+  name: water
   color: none
 
-coffee:
+2:
+  name: coffee
   color: black

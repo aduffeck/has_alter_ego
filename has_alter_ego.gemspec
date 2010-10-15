@@ -1,6 +1,6 @@
 spec = Gem::Specification.new do |s|
   s.name              = "has_alter_ego"
-  s.version           = "0.0.7"
+  s.version           = "0.0.8"
   s.authors           = ["André Duffeck"]
   s.email             = ["aduffeck@suse.de"]
   s.homepage          = "http://github.com/aduffeck/has_alter_ego"

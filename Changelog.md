@@ -1,3 +1,8 @@
+# 0.0.8 (2010-10-14)
+* Optimizations
+  - fewer queries (2*N => 2)
+  - less YAML parsing
+
 # 0.0.7 (2010-09-28)
 * non-numeric primary keys are no longer supported
 
