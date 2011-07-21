@@ -6,7 +6,11 @@ require 'test/unit'
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
 
 require File.dirname(__FILE__) + '/../lib/has_alter_ego'
-RAILS_ROOT = File.dirname(__FILE__)
+class Rails
+  def self.root
+    File.dirname(__FILE__)
+  end
+end
 
 silence_stream(STDOUT) do
   ActiveRecord::Schema.define do
