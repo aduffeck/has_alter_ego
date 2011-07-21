@@ -1,3 +1,7 @@
+# 0.0.9 (2011-07-21)
+* Rails 3.1 fixes
+* Fix sqlite3 compatibility
+
 # 0.0.8 (2010-10-14)
 * Optimizations
   - fewer queries (2*N => 2)
