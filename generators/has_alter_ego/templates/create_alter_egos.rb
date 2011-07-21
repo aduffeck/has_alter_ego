@@ -5,7 +5,7 @@ class CreateAlterEgos < ActiveRecord::Migration
       t.string :alter_ego_object_type, :limit => 40
       t.string :state
     end
-    add_index :alter_egos, [:alter_ego_object_id, :alter_ego_object_type]
+    add_index :alter_egos, [:alter_ego_object_id, :alter_ego_object_type], :name => 'index_on_alter_ego_object'
   end
 
   def self.down
