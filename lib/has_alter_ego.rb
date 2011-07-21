@@ -85,7 +85,7 @@ module HasAlterEgo
       end
 
       def get_yml
-        filename = File.join(RAILS_ROOT, "db", "fixtures", "alter_egos", self.table_name + ".yml")
+        filename = File.join(Rails.root.to_s, "db", "fixtures", "alter_egos", self.table_name + ".yml")
         return {} unless File.exists?(filename)
         yml = File.open(filename) do |yf|
           YAML::load( yf )

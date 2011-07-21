@@ -4,7 +4,7 @@ module HasAlterEgo
       raise "You need to pass a MODEL=<model name> argument to rake" if ENV["MODEL"].blank?
       klaas = ENV["MODEL"].constantize
 
-      yml_file = File.join(RAILS_ROOT, "db", "fixtures", "alter_egos", klaas.table_name + ".yml")
+      yml_file = File.join(Rails.root.to_s, "db", "fixtures", "alter_egos", klaas.table_name + ".yml")
       yml = {}
       if File.exists?(yml_file)
         File.open(yml_file) do |yf|
