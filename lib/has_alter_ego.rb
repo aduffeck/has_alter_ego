@@ -149,3 +149,6 @@ end
 class ActiveRecord::Base
   include HasAlterEgo::ActiveRecordAdapater
 end
+
+
+require "has_alter_ego/railtie" if defined?(Rails) && Rails.version >= "3"
